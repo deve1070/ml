@@ -1,0 +1,17 @@
+__pycache__
+.venv
+env/
+*.pyc
+.DS_Store
+.idea/
+.vscode/
+*.log
+coverage/
+dist/
+build/   
+*.egg-info/
+.env
+*.sqlite3
+node_modules/
+npm-debug.log
+yarn-error.log
