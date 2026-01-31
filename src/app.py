@@ -22,6 +22,7 @@ app = FastAPI(
 def root():
     return RedirectResponse(url="/static/")
 
+
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
 
 model = None
@@ -41,6 +42,8 @@ CLASS_EXPLANATIONS = {
     "Pulses": "Pulses – nutritious legumes (Bean, Pea) that fix nitrogen and improve soil health.",
     "Specialty": "Specialty Crops – high-value or niche options (Niger seed, Potato, Red Pepper, Fallow rotation).",
 }
+
+
 class CropInput(BaseModel):
     N: float = Field(..., ge=0, le=200, description="Nitrogen (0-200)", example=70)
     P: float = Field(..., ge=0, le=150, description="Phosphorus (0-150)", example=40)
@@ -62,6 +65,41 @@ class CropInput(BaseModel):
     S: float = Field(..., ge=0, le=100, description="Sulfur level", example=20.0)
     soil_moisture: float = Field(
         ..., ge=0, le=1, description="Topsoil moisture (0-1)", example=0.6
+    )
+
+
+@app.on_event("startup")
+def load_models():
+    global model, scaler, le
+    try:
+        model_path = MODELS_DIR / "best_crop_model.pkl"
+        scaler_path = MODELS_DIR / "scaler_merged.pkl"
+        le_path = MODELS_DIR / "label_encoder_merged.pkl"
+
+        print(f"DEBUG: Loading from: {MODELS_DIR.absolute()}")
+        model = joblib.load(model_path)
+        scaler = joblib.load(scaler_path)
+        le = joblib.load(le_path)
+        print("All models loaded successfully! 🌾")
+    except Exception as e:
+        print(f"CRITICAL: Failed to load models: {e}")
+        raise RuntimeError(f"Model loading failed: {e}")
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = []
+    for error in exc.errors():
+        field = " → ".join(str(loc) for loc in error["loc"])
+        msg = error["msg"]
+        errors.append(f"{field}: {msg}")
+
+    friendly_message = (
+        "Input validation failed:\n"
+        + "\n".join(errors)
+        + "\n\nPlease check all fields and try again."
+    )
+    return JSONResponse(status_code=422, content={"detail": friendly_message})
 
 
 @app.post("/predict")
