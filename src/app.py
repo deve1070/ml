@@ -21,6 +21,26 @@ app = FastAPI(
 @app.get("/")
 def root():
     return RedirectResponse(url="/static/")
+
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
+
+model = None
+scaler = None
+le = None
+
+GROUP_CROPS = {
+    "Major_Cereals": ["Teff", "Maize", "Wheat", "Barley"],
+    "Cereals": ["Dagussa", "Sorghum"],
+    "Pulses": ["Bean", "Pea"],
+    "Specialty": ["Niger seed", "Potato", "Red Pepper", "Fallow"],
+}
+
+CLASS_EXPLANATIONS = {
+    "Major_Cereals": "Major Cereals – staple grains like Teff (for injera), Maize, Wheat, and Barley. Highly suitable for most Ethiopian farms.",
+    "Cereals": "Minor Cereals – drought-resistant alternatives like Dagussa and Sorghum, good for drier areas.",
+    "Pulses": "Pulses – nutritious legumes (Bean, Pea) that fix nitrogen and improve soil health.",
+    "Specialty": "Specialty Crops – high-value or niche options (Niger seed, Potato, Red Pepper, Fallow rotation).",
+}
 class CropInput(BaseModel):
     N: float = Field(..., ge=0, le=200, description="Nitrogen (0-200)", example=70)
     P: float = Field(..., ge=0, le=150, description="Phosphorus (0-150)", example=40)
