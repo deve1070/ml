@@ -21,6 +21,27 @@ app = FastAPI(
 @app.get("/")
 def root():
     return RedirectResponse(url="/static/")
+class CropInput(BaseModel):
+    N: float = Field(..., ge=0, le=200, description="Nitrogen (0-200)", example=70)
+    P: float = Field(..., ge=0, le=150, description="Phosphorus (0-150)", example=40)
+    K: float = Field(..., ge=0, le=200, description="Potassium (0-200)", example=60)
+    ph: float = Field(..., ge=3, le=10, description="Soil pH", example=6.5)
+    temperature: float = Field(
+        ..., ge=5, le=45, description="Average Temperature °C", example=22.0
+    )
+    humidity: float = Field(
+        ..., ge=10, le=100, description="Average Humidity %", example=65.0
+    )
+    rainfall: float = Field(
+        ..., ge=100, le=2500, description="Annual Rainfall mm", example=1100.0
+    )
+    altitude_m: float = Field(
+        ..., ge=0, le=4500, description="Altitude (meters)", example=2400.0
+    )
+    Zn: float = Field(..., ge=0, le=50, description="Zinc level", example=5.0)
+    S: float = Field(..., ge=0, le=100, description="Sulfur level", example=20.0)
+    soil_moisture: float = Field(
+        ..., ge=0, le=1, description="Topsoil moisture (0-1)", example=0.6
 
 
 @app.post("/predict")
