@@ -15,4 +15,22 @@ build/
 node_modules/
 npm-debug.log
 yarn-error.log
+# Python virtual environment
+venv/
+
+# ML artifacts
+models/
+*.pkl
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Cache
+__pycache__/
+*.pyc
+
+# Data folders
 data/
+processed/
+
+
