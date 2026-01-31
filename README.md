@@ -72,3 +72,11 @@ Develop a mobile application for direct field use by farmers
 Add Amharic language support to improve local accessibility
 
 Incorporate ground-truth climate validation
+
+
+
+visit on https://huggingface.co/spaces/dawit-kassa/crop-recommendation-ethiopia
+
+
+<img width="1915" height="926" alt="image" src="https://github.com/user-attachments/assets/713dc745-d153-42e7-abed-06f6da21c13a" />
+
